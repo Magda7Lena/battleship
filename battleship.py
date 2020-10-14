@@ -1,9 +1,10 @@
+import os
+
 def init_board(size):
-    # Funkcja tworzy tablicę o wymiarach ze zmiennej size
     number_of_fields =int(size) * int(size) 
     board = ['.' for x in range(number_of_fields)]
     return board
-    
+
 
 def print_board(board):
     if len(board) == 25:
@@ -37,43 +38,183 @@ def print_board(board):
         print(f"J |  {board[90]}  |  {board[91]}  |  {board[92]}  |  {board[93]}  |  {board[94]}  |  {board[95]}  |  {board[96]}  |  {board[97]}  |  {board[98]}  |  {board[99]}\n--------------------------------------------------------------")
 
 
-    
-    
+def fillig_the_fields(field, board,):
+    if len(board) == 25:
+        comparative_list = ["a1", "a2", "a3", "a4", "a5", "b1", "b2", "b3", "b4", "b5", "c1", "c2", "c3", "c4", "c5", "d1", "d2", "d3", "d4", "d5", "e1", "e2", "e3", "e4", "e5"]
+        p = comparative_list.index(field)
+        board[p] = "X"
+        return board
+
+
+def locate_filed(field, board):
+     if len(board) == 25:
+        comparative_list = ["a1", "a2", "a3", "a4", "a5", "b1", "b2", "b3", "b4", "b5", "c1", "c2", "c3", "c4", "c5", "d1", "d2", "d3", "d4", "d5", "e1", "e2", "e3", "e4", "e5"]
+        p = comparative_list.index(field)
+        return p 
+
 
 
 def placement_phase(board, player):
-    pass
-    return board
-    # Funkcja pozwala graczom na rozstawienie swoich statków
+    if len(board) == 25:
+        os.system('cls')
+        print("=========================")
+        print(f"Player {player} ordering phase")
+        print("=========================")
+        new_board = board
+        print_board(new_board)
+        print("Available ships: XX and XXX")
+        print("Issue orders for first ship - XX")
+        field_1 = input("Select first field that the ship will occupy: ")
+        fillig_the_fields(field_1, new_board)
+        field_2 = input("Select second field that the ship will occupy: ")
+        fillig_the_fields(field_2, new_board)
+        print_board(new_board)   
+        print("Issue orders for second ship - XXX")
+        field_1 = input("Select first field that the ship will occupy: ")
+        fillig_the_fields(field_1, new_board)
+        field_2 = input("Select second field that the ship will occupy: ")
+        fillig_the_fields(field_2, new_board)
+        field_3 = input("Select second field that the ship will occupy: ")
+        fillig_the_fields(field_3, new_board)
+        print_board(new_board) 
+        return new_board
 
 
-def get_move(board, player):
-    pass
-    return row, col
-    return move = board[x]
-    #Funkcja zwraca współrzędne ruchu lub miejsce w tablicy
+def check_shoot(board, index):
+    if board[index] == "X":
+        return True
+    else:
+        return False
 
 
-def mark_shoot(board, shoot_board):
-    pass
-    # Funkcja odpowiedzialna za nadpisywanie odpowiedniej tablicy o ruchy graczy
+def check_win(board):
+    if "X" in board:
+        return False
+    if not "X" in board:
+        return True
 
 
-def switch_player(player):
-    pass
-    # Funkcja zamienia turę player1 na player2
+def get_valid_move(shooting_board):
+    valid_moves = ["a1", "a2", "a3", "a4", "a5", "b1", "b2", "b3", "b4", "b5", "c1", "c2", "c3", "c4", "c5", "d1", "d2", "d3", "d4", "d5", "e1", "e2", "e3", "e4", "e5"]
+    move = input("Choose the field where you want your rockets to strike: ")
 
-
-def check_win(player, board):
-    pass
-    return True / False
-    # Funkcja do sprawdzania czy player wygrał
+    if move in valid_moves:
+        index = locate_filed(move, shooting_board)
+        if shooting_board[index] == ".":
+            return index
+        if shooting_board[index] == "H" or shooting_board[index] == "M":
+            print("You have already selected this field")
+            get_valid_move(shooting_board)
+    else:
+        print("Invalid move")
+        get_valid_move(shooting_board)
 
 
 def battleship_game(mode, size):
     # Główna funkcja programu obsługująca poszczególne tury gry
     if mode == "H-H":
-        pass
+        players_board_1 = placement_phase(init_board(size), 1)
+        shooting_board_1 = (init_board(size))
+        my_board_1 = (init_board(size))
+        players_board_2 = placement_phase(init_board(size), 2)
+        shooting_board_2 = (init_board(size))
+        my_board_2 = (init_board(size))
+        os.system('cls')
+        player = 1
+        while check_win(players_board_1) == False and check_win(players_board_2) == False:
+            if player == 1:
+                print("=========================")
+                print(f"Player {player} ")
+                print("=========================")
+                print_board(shooting_board_1)
+                index = get_valid_move(shooting_board_1)
+                os.system('cls')
+                flag = check_shoot(players_board_2, index)
+                if flag == True:
+                    print("=========================")
+                    print(f"Player {player} ")
+                    print("=========================")
+                    print("You've hit a ship!")
+                    print("=========================")
+                    shooting_board_1[index] = "H"
+                    my_board_2[index] = "H"
+                    players_board_2[index] = "H"
+                if flag == False:
+                    print("=========================")
+                    print(f"Player {player} ")
+                    print("=========================")
+                    print("You've missed!")
+                    print("=========================")
+                    shooting_board_1[index] = "M"
+                    my_board_2[index] = "M"
+                print("Enemy map - Your moves")
+                print("H - hit")
+                print("M - missed")
+                print("=========================")
+                print_board(shooting_board_1)
+                print("=========================")
+                print(" ")
+                print("=========================")
+                print("Your map - Enemy moves")
+                print("H - hit")
+                print("M - missed")
+                print("=========================")
+                print_board(my_board_1)
+                if check_win(players_board_2) == True:
+                    print("=========================")
+                    print("Player 1 WON!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+                    print("=========================")
+                    main_menu()
+                x = input(" ")
+                os.system('cls')
+                player = 2
+            if player == 2:
+                print("=========================")
+                print(f"Player {player} ")
+                print("=========================")
+                print_board(shooting_board_2)
+                index = get_valid_move(shooting_board_2)
+                os.system('cls')
+                flag = check_shoot(players_board_1, index)
+                if flag == True:
+                    print("=========================")
+                    print(f"Player {player} ")
+                    print("=========================")
+                    print("=========================")
+                    print("You've hit a ship!")
+                    print("=========================")
+                    shooting_board_2[index] = "H"
+                    my_board_1[index] = "H"
+                    players_board_1[index] = "H"
+                if flag == False:
+                    print("=========================")
+                    print(f"Player {player} ")
+                    print("=========================")
+                    print("You've missed!")
+                    print("=========================")
+                    shooting_board_2[index] = "M"
+                    my_board_1[index] = "M"
+                print("Enemy map - Your moves")
+                print("H - hit")
+                print("M - missed")
+                print("=========================")
+                print_board(shooting_board_2)
+                print("=========================")
+                print(" ")
+                print("=========================")
+                print("Your map - Enemy moves")
+                print("H - hit")
+                print("M - missed")
+                print("=========================")
+                print_board(my_board_2)
+                if check_win(players_board_1) == True:
+                    print("=========================")
+                    print("Player 2 WON!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+                    print("=========================")
+                    main_menu()
+                x = input(" ")
+                os.system('cls')
+                player = 1
     if mode == "H-C":
         pass
     if mode == "C-H":
@@ -81,17 +222,21 @@ def battleship_game(mode, size):
 
 
 def size_choice():
+    print("Sizes: ")
     print("1.  5x5")
     print("2.  8x8")
     print("3.  10x10")
-    size_choice = (input("Select size of game board: ")
-    board_size = ""
+    size_choice = (input("Select size of game board: "))
+    board_size = 0
     if size_choice == "1":
         board_size = 5
+        return board_size
     if size_choice == "2":
         board_size = 8
+        return board_size
     if size_choice == "3":
         board_size = 10
+        return board_size
     else:
         print("Choose valid option!")
         size_choice()
@@ -107,13 +252,17 @@ def main_menu():
     select = input('Choose game mode: ')
     if select == str(1):
         game_mode = "H-H"
+        os.system('cls')
         size = size_choice()
+        os.system('cls')
         battleship_game(game_mode, size)
     elif select == str(2):
+        pass
         game_mode = "H-C"
         size = size_choice()
         battleship_game(game_mode, size)
     elif select == str(3):
+        pass
         game_mode = "C-H"
         size = size_choice()
         battleship_game(game_mode, size)     
